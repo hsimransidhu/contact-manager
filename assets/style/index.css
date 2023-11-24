@@ -27,7 +27,7 @@ body {
 }
 
 .container {
- 
+  height: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -92,7 +92,7 @@ button:hover {
 #contactsList {
   display: flex;
   flex-direction: row;
-    flex-wrap: wrap; /* Allow contacts to wrap to the next line */
+    flex-wrap: wrap; 
     justify-content: center;
     gap: 10px;
   }
