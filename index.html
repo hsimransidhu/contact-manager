@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/style/index.css">
-    <script type="module" src="assets/script/index.js" defer></script>
-    <title>Contact Manager</title>
-</head>
-<body>
-    <div class="container">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Contacts</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500;6..12,600&display=swap"
+    />
+    <link rel="stylesheet" href="./assets/style/index.css" media="all" />
+    <script src="./assets/script/index.js" type="module"></script>
+  </head>
+  <body>
+    <main>
+      <div class="container">
         <h1>Contact Manager</h1>
-        
-        <form id="contactForm">
-            
-            <input type="text" id="contactDetails" placeholder="Contact Info(Name,City,email)" required>
-
-            <button type="button" id="addContactBtn">Add Contact</button>
+        <form>
+            <input placeholder="Contact info (name,city,email)">
+            <button class="add-btn">Add</button>
+            <p class="error"></p>
         </form>
-
-        <div id="contactsList"></div>
-
-        <p id="contactCount">Number of Contacts: 0</p>
-    </div>
-</body>
+        <section class="contactList"></section>
+        <p class="alert"></p>
+        <div class="saved-contacts"></div>
+      </div>
+    </main>
+  </body>
 </html>

@@ -1,19 +1,11 @@
-export class Contact {
-    constructor(name, city, email) {
-        this._name = name;
-        this._city = city;
-        this._email = email;
-    }
-
-    getName() {
-        return this._name;
-    }
-
-    getCity() {
-        return this._city;
-    }
-
-    getEmail() {
-        return this._email;
-    }
-}
+ // Add event listener
+function onEvent(event, selector, callback) {
+    return selector.addEventListener(event, callback);
+  }
+  
+  // Select HTML element
+  function select(selector, parent = document) {
+    return parent.querySelector(selector);
+  }
+  
+  export { onEvent, select };

@@ -1,88 +1,125 @@
-import { Contact } from './utils.js';
+'use strict';
+
+import { onEvent, select } from './utils.js';
+import Contact from './contact.js';
+ 
+const input = select('input');
+const Addbtn = select('.add-btn');
+const contactList = select('.contactList');
+const savedContacts = select('.saved-contacts');
+const errorMessage = select('.error');
+const AlertMessage = select('.alert');
 
 const contacts = [];
+let name, city, email;
+let maxContacts = 9;
+savedContacts.innerText = 'Saved contacts: 0';
 
-document.getElementById('addContactBtn').addEventListener('click', addContact);
+// validate inputs
+function validateInputs() {
+  let userInput = input.value
+    .trim()
+    .split(',')
+    .map(part => part.trim());
+  [name, city, email] = userInput;
 
-function addContact() {
-    const contactDetailsInput = document.getElementById('contactDetails');
-    const contactDetails = contactDetailsInput.value;
+  const emailRegex =
+    /^(?=.{8,}$)[-_A-Za-z0-9]+([.-_][a-zA-Z0-9]+)*@[A-Za-z0-9]+([.-][a-zA-Z0-9]+)*\.[A-Za-z]{2,}$/;
 
-    // Validate input
-    if (!isValidInput(contactDetails)) {
-        alert('Invalid input. Please enter contact details in the format: Name, City, Email');
-        return;
+  if (userInput.length === 3) {
+    if (typeof name !== 'string' || name.length < 2 || /\d/.test(name)) {
+      ErrorMessage('Please enter a valid name!');
+      return false;
     }
 
-    // Split the input into an array using commas
-    const [name, city, email] = contactDetails.split(',');
+    if (typeof city !== 'string' || city.length < 2 || /\d/.test(city)) {
+      ErrorMessage('Please enter a valid city!');
+      return false;
+    }
 
-    // Create a new contact
-    const newContact = new Contact(name.trim(), city.trim(), email.trim());
-
-    // Add the new contact to the beginning of the list
-    contacts.unshift(newContact);
-
-    // Display the updated contacts list
-    listContacts();
-
-    // Count and display the number of contacts
-    document.getElementById('contactCount').innerText = `Number of Contacts: ${contacts.length}`;
-
-    // Clear the input field
-    contactDetailsInput.value = '';
+    if (!emailRegex.test(email)) {
+      ErrorMessage('Please enter a valid email');
+      return false;
+    }
+ 
+    return true;
+  } else {
+    ErrorMessage(
+      'Please enter all the specified inputs (Name, City, Email)'
+    );
+    return false;
+  }
 }
 
-function isValidInput(input) {
-    // Validate that the input contains commas and splits into 3 parts
-    const parts = input.split(',');
-    if (parts.length !== 3) {
-        return false;
-    }
+function ErrorMessage(message) {
+  errorMessage.innerText = message;
+}
+ 
+function clearErrorMessage() {
+    errorMessage.innerText = '';
+  }
+  
+function listContacts() {
+  AlertMessage.innerText = '';
 
-    // Validate the email format using a simple regex
-    const emailRegex = /^\S+@\S+\.\S+$/;
-    const email = parts[2].trim();
-    if (!emailRegex.test(email)) {
-        return false;
-    }
+  if (contacts.length > maxContacts) {
+    AlertMessage.innerText =
+      'Storage is full! Cannot add more contacts :(';
+    return;
+  }
 
-    return true;
+  contactList.innerHTML = '';
+ 
+  contacts.forEach((contact, index) => {
+    const contactsDiv = document.createElement('div');
+    contactsDiv.classList.add('contact-info');
+    const namesPara = document.createElement('p');
+    const citysPara = document.createElement('p');
+    const emailsPara = document.createElement('p');
+    namesPara.innerText = `Name: ${contact.name.trim()}`;
+    citysPara.innerText = `City: ${contact.city.trim()}`;
+    emailsPara.innerText = `Email: ${contact.email.trim().toLowerCase()}`;
+    contactsDiv.appendChild(namesPara);
+    contactsDiv.appendChild(citysPara);
+    contactsDiv.appendChild(emailsPara);
+
+    contactList.appendChild(contactsDiv);
+
+    // delete  contact
+    onEvent('click', contactsDiv, function () {
+      deleteContact(index);
+    });
+  });
+ 
+  displaySaved(contacts);
+}
+ 
+function displaySaved(array) {
+  let numberContacts = array.length;
+  savedContacts.innerText = `Saved contacts: ${numberContacts}`;
 }
 
 function deleteContact(index) {
-    // Remove the contact from the array
     contacts.splice(index, 1);
-
-    // Display the updated contacts list
     listContacts();
+    AlertMessage.innerText = '';
+  }
+   
+onEvent('click', Addbtn, function (e) {
+  e.preventDefault();
 
-    // Count and display the number of contacts
-    document.getElementById('contactCount').innerText = `Number of Contacts: ${contacts.length}`;
-}
+  // Validate inputs
+  if (!validateInputs()) {
+    return;
+  }
 
-function listContacts() {
-    const contactsList = document.getElementById('contactsList');
-    contactsList.innerHTML = ''; // Clear the existing list
+  // Create new contact
+  const newContact = new Contact(name, city, email);
+  contacts.unshift(newContact);
 
-    // Iterate through the array and display contacts
-    contacts.forEach((contact, index) => {
-        const contactDiv = document.createElement('div');
-        contactDiv.classList.add('contact');
-
-        const contactInfo = document.createElement('p');
-        contactInfo.innerHTML = `<strong>Name:</strong> ${contact.getName()}<br>
-                                <strong>City:</strong> ${contact.getCity()}<br>
-                                <strong>Email:</strong> ${contact.getEmail()}`;
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.classList.add('delete-btn');
-        deleteBtn.innerText = 'Delete';
-        deleteBtn.addEventListener('click', () => deleteContact(index));
-
-        contactDiv.appendChild(contactInfo);
-        contactDiv.appendChild(deleteBtn);
-
-        contactsList.appendChild(contactDiv);
-    });
-}
+  // Display contacts
+  listContacts();
+  input.value = '';
+  
+  clearErrorMessage();
+});
