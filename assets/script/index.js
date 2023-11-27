@@ -85,11 +85,11 @@ function listContacts() {
 
     contactList.appendChild(contactsDiv);
 
-    // delete  contact
-    onEvent('click', contactsDiv, function () {
-      deleteContact(index);
-    });
+     // delete  contact
+  onEvent('click', contactsDiv, function () {
+    deleteContact(contact);
   });
+});
  
   displaySaved(contacts);
 }
@@ -99,12 +99,14 @@ function displaySaved(array) {
   savedContacts.innerText = `Saved contacts: ${numberContacts}`;
 }
 
-function deleteContact(index) {
+function deleteContact(contactToDelete) {
+  const index = contacts.indexOf(contactToDelete);
+  if (index !== -1) {
     contacts.splice(index, 1);
     listContacts();
     AlertMessage.innerText = '';
   }
-   
+}
 onEvent('click', Addbtn, function (e) {
   e.preventDefault();
 
