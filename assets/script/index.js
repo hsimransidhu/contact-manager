@@ -28,24 +28,24 @@ function validateInputs() {
 
   if (userInput.length === 3) {
     if (typeof name !== 'string' || name.length < 2 || /\d/.test(name)) {
-      ErrorMessage('Please enter a valid name!');
+      ErrorMessage('Please enter name');
       return false;
     }
 
     if (typeof city !== 'string' || city.length < 2 || /\d/.test(city)) {
-      ErrorMessage('Please enter a valid city!');
+      ErrorMessage('Please enter city!');
       return false;
     }
 
     if (!emailRegex.test(email)) {
-      ErrorMessage('Please enter a valid email');
+      ErrorMessage('Please enter email');
       return false;
     }
  
     return true;
   } else {
     ErrorMessage(
-      'Please enter all the specified inputs (Name, City, Email)'
+      'Please enter everything (Name, City, Email)'
     );
     return false;
   }
@@ -64,7 +64,7 @@ function listContacts() {
 
   if (contacts.length > maxContacts) {
     AlertMessage.innerText =
-      'Storage is full! Cannot add more contacts :(';
+      'Storage is full';
     return;
   }
 
@@ -101,7 +101,7 @@ function displaySaved(array) {
 
 function deleteContact(contactToDelete) {
   const index = contacts.indexOf(contactToDelete);
-  if (index !== -1) {
+  if (index !== 1) {
     contacts.splice(index, 1);
     listContacts();
     AlertMessage.innerText = '';
@@ -109,14 +109,12 @@ function deleteContact(contactToDelete) {
 }
 onEvent('click', Addbtn, function (e) {
   e.preventDefault();
-
-  // Validate inputs
+ 
   if (!validateInputs()) {
     return;
   }
 
-  // Create new contact
-  const newContact = new Contact(name, city, email);
+  let newContact = new Contact(name, city, email);
   contacts.unshift(newContact);
 
   // Display contacts
